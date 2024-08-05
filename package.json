@@ -1,0 +1,12 @@
+{
+  "name": "web_crawler",
+  "version": "1.0.0",
+  "description": "A guided web crawler project for Boot.dev.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "author": "Ryan Brooks",
+  "license": "ISC"
+}
