@@ -35,5 +35,28 @@ function getURLsFromHTML(htmlBody, baseURL) {
     return urlList
 }
 
+async function crawlPage(currentURL) {
+    // Status message so we know that we're traversing
+    console.log(`crawling ${currentURL}`)
+
+    let res
+    try {
+        res = await fetch(currentURL)
+        if (res.status > 399) {
+            throw new Error(`Got Network error: ${res.status}`)
+        }
+        const contentType = res.headers.get('content-type')
+        if (!contentType || !contentType.includes('text/html')) {
+            throw new Error(`Got non-HTML response: ${contentType}`)
+        }
+
+        console.log(await res.text())
+
+    } catch (err) {
+        console.error(err.message)
+    }
+
+}
+
 // we don't need the 'export function' keywords above if we choose to export as below:
-export { normalizeURL, getURLsFromHTML }
+export { normalizeURL, getURLsFromHTML, crawlPage }

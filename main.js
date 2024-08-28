@@ -1,5 +1,6 @@
+import { crawlPage } from "./crawl.js"
 
-function main() {
+async function main() {
     const args = process.argv
     if (args.length == 3) {
         // try to create a new URL object with the arg, exit if we can't
@@ -19,6 +20,12 @@ function main() {
         console.log(Error('Too many command-line arguments. Please only provide one root URL.').message)
         return
     }
+
+    const baseURL = process.argv[2]
+
+    console.log(`Beginning crawl of: ${baseURL}...`)
+
+    await crawlPage(baseURL)
     
 }
 
