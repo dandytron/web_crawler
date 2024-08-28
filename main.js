@@ -1,6 +1,6 @@
 import { crawlPage } from "./crawl.js"
 
-async function main() {
+async function main() {    
     const args = process.argv
     if (args.length == 3) {
         // try to create a new URL object with the arg, exit if we can't
@@ -25,7 +25,9 @@ async function main() {
 
     console.log(`Beginning crawl of: ${baseURL}...`)
 
-    await crawlPage(baseURL)
+    const pages = await crawlPage(baseURL)
+
+    console.log(pages)
     
 }
 

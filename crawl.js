@@ -35,10 +35,44 @@ function getURLsFromHTML(htmlBody, baseURL) {
     return urlList
 }
 
-async function crawlPage(currentURL) {
+async function crawlPage(baseURL, currentURL=baseURL, pages={}) {
     // Status message so we know that we're traversing
-    console.log(`crawling ${currentURL}`)
+    const currentURLObj = new URL(currentURL)
+    const baseURLObj = new URL(baseURL)
 
+    if (currentURLObj.hostname !== baseURLObj.hostname) {
+        return pages
+    }
+
+    const normalizedCurrentURL = normalizeURL(currentURL)
+
+    if (!pages[normalizedCurrentURL]) {
+        pages[normalizedCurrentURL] = 1
+    } else {
+        pages[normalizedCurrentURL]++
+    }
+
+    console.log(`crawling ${currentURL}...`)
+
+    let html = ''
+
+    try {
+        html = fetchCurrentURL(normalizedCurrentURL)
+    } catch (err) {
+        console.log(`${err.message}`)
+        return pages
+    }
+    
+    const nextURLs = getURLsFromHTML(html, baseURL)
+    for (const nextURL of nextURLs) {
+        await crawlPage(baseURL, nextURL, pages)
+    }
+
+    return pages
+
+}
+
+async function fetchCurrentURL(currentURL) {
     let res
     try {
         res = await fetch(currentURL)
@@ -50,12 +84,13 @@ async function crawlPage(currentURL) {
             throw new Error(`Got non-HTML response: ${contentType}`)
         }
 
-        console.log(await res.text())
+        return await res.text()
 
     } catch (err) {
         console.error(err.message)
     }
 
+    return false
 }
 
 // we don't need the 'export function' keywords above if we choose to export as below:
